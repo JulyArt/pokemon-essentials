@@ -1311,25 +1311,23 @@ class PokeBattle_AI
       end
     #---------------------------------------------------------------------------
     when "05E"
-      if !user.canChangeType?
+      if user.ability == :MULTITYPE || user.ability == :RKSSYSTEM
         score -= 90
       else
-        has_possible_type = false
-        user.eachMoveWithIndex do |m,i|
-          break if Settings::MECHANICS_GENERATION >= 6 && i>0
+        types = []
+        user.eachMove do |m|
+          next if m.id==@id
           next if GameData::Type.get(m.type).pseudo_type
           next if user.pbHasType?(m.type)
-          has_possible_type = true
-          break
+          types.push(m.type) if !types.include?(m.type)
         end
-        score -= 90 if !has_possible_type
+        score -= 90 if types.length==0
       end
     #---------------------------------------------------------------------------
     when "05F"
-      if !user.canChangeType?
+      if user.ability == :MULTITYPE || user.ability == :RKSSYSTEM
         score -= 90
-      elsif !target.lastMoveUsed || !target.lastMoveUsedType ||
-         GameData::Type.get(target.lastMoveUsedType).pseudo_type
+      elsif !target.lastMoveUsed || GameData::Move.get(target.lastMoveUsed).pseudo_type
         score -= 90
       else
         aType = nil
@@ -1341,14 +1339,13 @@ class PokeBattle_AI
         if !aType
           score -= 90
         else
-          has_possible_type = false
+          types = []
           GameData::Type.each do |t|
             next if t.pseudo_type || user.pbHasType?(t.id) ||
-                    !Effectiveness.resistant_type?(target.lastMoveUsedType, t.id)
-            has_possible_type = true
-            break
+                    !Effectiveness.resistant_type?(aType, t.id)
+            types.push(t.id)
           end
-          score -= 90 if !has_possible_type
+          score -= 90 if types.length==0
         end
       end
     #---------------------------------------------------------------------------

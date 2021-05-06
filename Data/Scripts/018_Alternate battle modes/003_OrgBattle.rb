@@ -22,10 +22,10 @@ class PBPokemon
     itm = GameData::Item.try_get(item)
     @item = itm ? itm.id : nil
     @nature = nature
-    @move1 = move1 ? move1 : nil
-    @move2 = move2 ? move2 : nil
-    @move3 = move3 ? move3 : nil
-    @move4 = move4 ? move4 : nil
+    @move1 = move1 ? move1 : 0
+    @move2 = move2 ? move2 : 0
+    @move3 = move3 ? move3 : 0
+    @move4 = move4 ? move4 : 0
     @ev = ev
   end
 
@@ -55,9 +55,7 @@ class PBPokemon
       move_data = GameData::Move.try_get(moves[i])
       moveid.push(move_data.id) if move_data
     end
-    if moveid.length==0
-      GameData::Move.each { |mov| moveid.push(mov.id); break }
-    end
+    moveid=[GameData::Move.get(1)] if moveid.length==0
     return self.new(species, item, nature, moveid[0], moveid[1], moveid[2], moveid[3], ev_array)
   end
 
@@ -156,13 +154,14 @@ class PBPokemon
     pokemon=Pokemon.new(@species,level,trainer,false)
     pokemon.item = @item
     pokemon.personalID = rand(2**16) | rand(2**16) << 16
-    pokemon.nature = nature
+    pokemon.personalID -= pokemon.personalID % 25
+    pokemon.personalID += nature
+    pokemon.personalID &= 0xFFFFFFFF
     pokemon.happiness=0
     pokemon.moves[0] = Pokemon::Move.new(self.convertMove(@move1))
-    pokemon.moves[1] = (@move2) ? Pokemon::Move.new(self.convertMove(@move2)) : nil
-    pokemon.moves[2] = (@move3) ? Pokemon::Move.new(self.convertMove(@move3)) : nil
-    pokemon.moves[3] = (@move4) ? Pokemon::Move.new(self.convertMove(@move4)) : nil
-    pokemon.moves.compact!
+    pokemon.moves[1] = Pokemon::Move.new(self.convertMove(@move2))
+    pokemon.moves[2] = Pokemon::Move.new(self.convertMove(@move3))
+    pokemon.moves[3] = Pokemon::Move.new(self.convertMove(@move4))
     if ev.length > 0
       ev.each { |stat| pokemon.ev[stat] = Pokemon::EV_LIMIT / ev.length }
     end
@@ -469,7 +468,7 @@ class BattleChallenge
   end
 
   def start(*args)
-    t = ensureType(@id)
+    ensureType(@id)
     @currentChallenge=@id   # must appear before pbStart
     @bc.pbStart(t,@numRounds)
   end
@@ -681,9 +680,8 @@ end
 def pbBattleChallengeGraphic(event)
   nextTrainer=pbBattleChallenge.nextTrainer
   bttrainers=pbGetBTTrainers(pbBattleChallenge.currentChallenge)
-  filename=GameData::TrainerType.charset_filename_brief((bttrainers[nextTrainer][0] rescue nil))
+  filename=GameData::TrainerType.charset_filename_brief((bttrainers[nextTrainer][0] rescue 0))
   begin
-    filename = "NPC 01" if nil_or_empty?(filename)
     bitmap=AnimatedBitmap.new("Graphics/Characters/"+filename)
     bitmap.dispose
     event.character_name=filename

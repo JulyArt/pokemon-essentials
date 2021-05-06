@@ -237,7 +237,7 @@ class PokeBattle_Battle
       end
       return
     end
-    # Pokémon already knows the maximum number of moves; try to forget one to learn the new move
+   # Pokémon already knows the maximum number of moves; try to forget one to learn the new move
     loop do
       pbDisplayPaused(_INTL("{1} wants to learn {2}, but it already knows four moves.",pkmnName,moveName))
       if pbDisplayConfirm(_INTL("Forget a move to learn {1}?",moveName))

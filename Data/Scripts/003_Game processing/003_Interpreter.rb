@@ -26,6 +26,7 @@ class Interpreter
     return str
   end
 
+  
   def clear
     @map_id             = 0       # map ID when starting up
     @event_id           = 0       # event ID

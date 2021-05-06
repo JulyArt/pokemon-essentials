@@ -347,7 +347,7 @@ module Compiler
         f.write(sprintf("Incense = %s\r\n", species.incense)) if species.incense
       end
     }
-    pbSetWindowText(nil)
+    pbSetWindowText(Settings::ALT_GAME_TITLE) #(july.varplace)
     Graphics.update
   end
 
@@ -451,7 +451,7 @@ module Compiler
         end
       end
     }
-    pbSetWindowText(nil)
+    pbSetWindowText(Settings::ALT_GAME_TITLE) #(july.varplace)
     Graphics.update
   end
 
@@ -626,7 +626,7 @@ module Compiler
         end
       end
     }
-    pbSetWindowText(nil)
+    pbSetWindowText(Settings::ALT_GAME_TITLE) #(july.varplace)
     Graphics.update
   end
 

@@ -1,5 +1,5 @@
 def pbRandomMove
-  keys = GameData::Move::DATA.keys
+  keys = GameData::Move::DATA.keys.sort
   loop do
     move_id = keys[rand(keys.length)]
     move = GameData::Move.get(move_id)
@@ -249,7 +249,7 @@ def pbRandomPokemonFromRule(rule,trainer)
     iteration+=1
     species=nil
     level=rule.ruleset.suggestedLevel
-    keys = GameData::Species::DATA.keys
+    keys = GameData::Species::DATA.keys.sort
     loop do
       loop do
         species = keys[rand(keys.length)]
@@ -910,10 +910,9 @@ def pbTrainerInfo(pokemonlist,trfile,rules)
       if GameData::TrainerType.exists?(:YOUNGSTER) && rand(30) == 0
         trainerid = :YOUNGSTER
       else
-        tr_typekeys = GameData::TrainerType::DATA.keys
+        tr_type_values = GameData::TrainerType::DATA.values
         loop do
-          tr_type = tr_typekeys[rand(tr_typekeys.length)]
-          tr_type_data = GameData::TrainerType.get(tr_type)
+          tr_type_data = tr_type_values[rand(tr_type_values.length)]
           next if tr_type_data.base_money >= 100
           trainerid = tr_type_data.id
         end

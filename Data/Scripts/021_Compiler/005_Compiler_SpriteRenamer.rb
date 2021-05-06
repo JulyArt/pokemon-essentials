@@ -236,6 +236,6 @@ module Compiler
     convert_pokemon_cries("Audio/SE/Cries/")
     # Rename trainer sprites
     convert_trainer_sprites("Graphics/Trainers/")
-    pbSetWindowText(nil)
+    pbSetWindowText(Settings::ALT_GAME_TITLE) #(july.varplace)
   end
 end

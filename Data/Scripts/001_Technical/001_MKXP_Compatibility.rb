@@ -1,7 +1,7 @@
 # Using mkxp-z v2.1.2 - https://gitlab.com/mkxp-z/mkxp-z/-/releases/v2.1.2
 $VERBOSE = nil
 Font.default_shadow = false if Font.respond_to?(:default_shadow)
-Graphics.frame_rate = 40
+Graphics.frame_rate = 80  #(july.default:40)
 
 def pbSetWindowText(string)
   System.set_window_title(string || System.game_title)

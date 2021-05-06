@@ -543,6 +543,44 @@ def pbMessageDisplay(msgwindow,message,letterbyletter=true,commandProc=nil)
       next $game_actors[m].name
     }
   end
+
+#~~~~
+#(july.multi.edit.begin) : Moved \v command to current place, added new useful replacers.
+  # Main Dialogue Command, does 'everything'.
+  loop do
+    last_text = text.clone
+    text.gsub!(/\\d\[([0-9]+)\]/i) { "\\md\\w[]"<<$dia_se[$1.to_i].join }
+    break if text == last_text
+  end
+  # Given Item, Synthesizing Items
+  loop do
+    last_text = text.clone
+    text.gsub!(/\\i\[([0-9]+)\]/i) { "\\mi\\w[]<ac>"<<$dia_se[$1.to_i].join<<"</ac>" }
+    break if text == last_text
+  end
+  # Empty Dialouge, meant to perpetuate 'pause cursor' animation
+  # Place after every interuption of dialogue 'show text' sequences.
+  # i.e.   'show text: Hello World' -> '\canc' -> 'do XYZ' -> 'show text:'
+  loop do
+    last_text = text.clone
+    text.gsub!(/\\canc/i) { "\\^\\w[]" }
+    break if text == last_text
+  end
+  # Return $Game_Variables[i]
+  loop do
+    last_text = text.clone
+    text.gsub!(/\\v\[([0-9]+)\]/i) { $game_variables[$1.to_i] }
+    break if text == last_text
+  end
+  # Return $Game_Variables[i][n]
+  loop do
+    last_text = text.clone
+    text.gsub!(/\\a\[([0-9]+)\]\[([0-9]+)\]/i) { $game_variables[$1.to_i][$2.to_i] }
+    break if text == last_text
+  end
+#(july.multi.edit.end)
+#~~~~
+
   text.gsub!(/\\pn/i,$Trainer.name) if $Trainer
   text.gsub!(/\\pm/i,_INTL("${1}",$Trainer.money.to_s_formatted)) if $Trainer
   text.gsub!(/\\n/i,"\n")
@@ -571,11 +609,6 @@ def pbMessageDisplay(msgwindow,message,letterbyletter=true,commandProc=nil)
   }
   loop do
     last_text = text.clone
-    text.gsub!(/\\v\[([0-9]+)\]/i) { $game_variables[$1.to_i] }
-    break if text == last_text
-  end
-  loop do
-    last_text = text.clone
     text.gsub!(/\\l\[([0-9]+)\]/i) {
       linecount = [1,$1.to_i].max
       next ""
@@ -593,7 +626,7 @@ def pbMessageDisplay(msgwindow,message,letterbyletter=true,commandProc=nil)
   ### Controls
   textchunks=[]
   controls=[]
-  while text[/(?:\\(f|ff|ts|cl|me|se|wt|wtnp|ch)\[([^\]]*)\]|\\(g|cn|pt|wd|wm|op|cl|wu|\.|\||\!|\^))/i]
+  while text[/(?:\\(f|ff|ts|cl|me|se|wt|wtnp|ch)\[([^\]]*)\]|\\(md|mi|g|cn|pt|wd|wm|op|cl|wu|\.|\||\!|\^))/i]
     textchunks.push($~.pre_match)
     if $~[1]
       controls.push([$~[1].downcase,$~[2],-1])
@@ -709,6 +742,30 @@ def pbMessageDisplay(msgwindow,message,letterbyletter=true,commandProc=nil)
       when "pt"     # Display battle points window
         battlepointswindow.dispose if battlepointswindow
         battlepointswindow = pbDisplayBattlePointsWindow(msgwindow)
+
+##(july.multi.edit.begin) : Main Text Window Placement
+      # Main Dialogue Window Placement
+      when "md"
+        atTop = false
+        msgwindow.height = $dialoguewindowheight
+        msgwindow.width -= $dialoguewindowwidthoffsetright
+        msgwindow.x = $dialoguewindowwidthoffsetleft
+        msgwindow.y = Graphics.height-msgwindow.height
+        msgback.y = msgwindow.y if msgback
+        pbPositionNearMsgWindow(facewindow,msgwindow,:left)
+        msgwindow.y = Graphics.height-msgwindow.height*(signWaitTime-signWaitCount)/signWaitTime
+      # Main Item Window Placement
+      when "mi"
+        atTop = true
+        msgwindow.height = $dialoguewindowheight
+        msgwindow.width -= $dialoguewindowwidthoffsetright
+        msgwindow.x += $dialoguewindowwidthoffsetright/2
+        msgwindow.y = msgwindow.height
+        msgback.y = msgwindow.y if msgback
+        pbPositionNearMsgWindow(facewindow,msgwindow,:left)
+        msgwindow.y = -msgwindow.height*signWaitCount/signWaitTime
+#(july.multi.edit.end)
+
       when "wu"
         msgwindow.y = 0
         atTop = true
