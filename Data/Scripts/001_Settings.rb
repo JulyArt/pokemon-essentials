@@ -4,32 +4,9 @@
 #                https://github.com/Maruno17/pokemon-essentials                #
 #==============================================================================#
 
-#July's Notes
-#~~~~~~~~~~~
-#(july.note)              :Info
-#(july.default)           :Default Info
-#(july.minute.edit)       :Less consequential edits.
-#(july.edit)              :Consequential edits.
-#(july.establish)         :Establishing Variables
-#(july.varplace)          :Placing QOL Variables.
-#(july.multi.edit.begin)  :Indicate Begin of Multi Lines Edit / Additions
-#(july.multi.edit.end)    :Indicate End of Multi Lines Edit / Additions
-#(july.begin)             :Indicate Begin of Additional Additions
-#(july.end)               :Indicate End of Additional Additions
-
 module Settings
-#~july.begin : Additional Settings  #(july.establish)
-
-  # Window's Game Title. Allowing characters not allowed in folder name.
-  ALT_GAME_TITLE = "PKMN | Radiance"
-
-  # Save Game File's Name
-  GAME_SAVE_NAME = '/Radiance_Save.rxdata', './Radiance_Save.rxdata', 'Radiance_Save.rxdata'
-
-#~july.end : Additional Settings
-
   # The version of your game. It has to adhere to the MAJOR.MINOR.PATCH format.
-  GAME_VERSION = '0.6.0'
+  GAME_VERSION = '1.0.0'
 
   # The generation that the battle system follows. Used throughout the battle
   # scripts, and also by some other settings which are used in and out of battle
@@ -41,10 +18,10 @@ module Settings
 
   #=============================================================================
 
-  # The default screen width  (at a scale of 1.0).
-  SCREEN_WIDTH  = 896 #(july.edit)(july.default:512)
+  # The default screen width (at a scale of 1.0).
+  SCREEN_WIDTH  = 512
   # The default screen height (at a scale of 1.0).
-  SCREEN_HEIGHT = 512 #(july.edit)(july.default:384)
+  SCREEN_HEIGHT = 384
   # The default screen scale factor. Possible values are 0.5, 1.0, 1.5 and 2.0.
   SCREEN_SCALE  = 1.0
   # Map view mode (0=original, 1=custom, 2=perspective).
@@ -70,9 +47,9 @@ module Settings
   #=============================================================================
 
   # The amount of money the player starts the game with.
-  INITIAL_MONEY        = 3000 #(july.minute.edit)
+  INITIAL_MONEY        = 3000
   # The maximum amount of money the player can have.
-  MAX_MONEY            = 999_999_999  #(july.edit)
+  MAX_MONEY            = 999_999
   # The maximum number of Game Corner coins the player can have.
   MAX_COINS            = 99_999
   # The maximum number of Battle Points the player can have.
@@ -178,7 +155,7 @@ module Settings
 
   # The name of the person who created the Pokémon storage system.
   def self.storage_creator_name
-    return _INTL("Eliza")  #(july.minute.edit)
+    return _INTL("Bill")
   end
   # The number of boxes in Pokémon storage.
   NUM_STORAGE_BOXES = 30

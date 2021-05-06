@@ -6,9 +6,9 @@
 module SaveData
   # Contains the file path of the save file.
   FILE_PATH = if File.directory?(System.data_directory)
-                System.data_directory << Settings::GAME_SAVE_NAME[0] #(july.varplace)
+                System.data_directory + '/Game.rxdata'
               else
-                Settings::GAME_SAVE_NAME[1] #(july.varplace)
+                './Game.rxdata'
               end
 
   # @return [Boolean] whether the save file exists
@@ -90,7 +90,7 @@ module SaveData
     return if home.nil?
     old_location = File.join(home, 'Saved Games', game_title)
     return unless File.directory?(old_location)
-    old_file = File.join(old_location, Settings::GAME_SAVE_NAME[2]) #(july.varplace)
+    old_file = File.join(old_location, 'Game.rxdata')
     return unless File.file?(old_file)
     File.move(old_file, FILE_PATH)
   end

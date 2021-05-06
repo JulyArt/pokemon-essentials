@@ -438,7 +438,7 @@ module PluginManager
     message += "#{$!.class} occurred.\r\n"
     # go through message content
     for line in $!.message.split("\r\n")
-      ret = meta[1] if nil_or_empty?(ret)
+      next if nil_or_empty?(line)
       n = line[/\d+/]
       err = line.split(":")[-1].strip
       lms = line.split(":")[0].strip
